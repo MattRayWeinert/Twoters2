@@ -6,9 +6,9 @@ import axios from 'axios';
 
 class dashboard extends Component 
 {
-    constructor(props)
+    constructor()
     {
-        super(props);
+        super();
 
         this.state = {
             isLoggedIn: false,
@@ -131,7 +131,10 @@ class dashboard extends Component
                     </div>
                 </nav>
 
-                <h1>dashboard</h1>
+                <div>
+                    <h1>dashboard</h1>
+                    
+                </div>
             </div>
         )
     }

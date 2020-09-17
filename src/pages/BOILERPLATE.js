@@ -6,9 +6,9 @@ import axios from 'axios';
 
 class BOILERPLATE extends Component 
 {
-    constructor(props)
+    constructor()
     {
-        super(props);
+        super();
 
         this.state = {
             isLoggedIn: false,

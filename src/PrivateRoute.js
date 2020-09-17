@@ -5,9 +5,9 @@ import axios from 'axios';
 class PrivateRoute extends Component
 {
 
-constructor(props, context)
+constructor()
 {
-    super(props, context);
+    super();
 
     this.state = {
         isLoading: true,

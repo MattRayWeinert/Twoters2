@@ -10,9 +10,9 @@ const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"
 class signup extends Component
 {
     
-    constructor(props)
+    constructor()
     {
-        super(props);
+        super();
 
         this.state = {
             username: '',
@@ -285,7 +285,7 @@ class signup extends Component
         const User = {
             username: this.state.loginUsername,
             password: this.state.loginPassword
-        }
+        };
         
         axios.post('http://localhost:5000/user/login', User)
         .then(res => {
