@@ -23,23 +23,24 @@ mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedT
     })
     
     const newUserRouter = require('./routes/user');
-    
+    const newListingRouter = require('./routes/listing');
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
     app.use(
-    cors({
-        origin: "http://localhost:3000", // <-- location of the react app were connecting to
-        credentials: true,
-        maxAge: 60 * 60 * 3600
+        cors({
+            origin: "http://localhost:3000", // <-- location of the react app were connecting to
+            credentials: true,
+            maxAge: 60 * 60 * 3600
     }));
     app.use(cookieParser(process.env.SECRET));
     app.use(
-    session({
-        secret: process.env.SECRET,
-        resave: false,
-        saveUninitialized: false
-            // store: new MongoStore({ mongooseConnection: dbConnection })
+        session({
+            secret: process.env.SECRET,
+            resave: false,
+            saveUninitialized: false
+                // store: new MongoStore({ mongooseConnection: dbConnection })
     }));
     app.use(express.urlencoded({ extended: true }));
     app.use(passport.initialize());
@@ -48,6 +49,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedT
 
     // Routes
     app.use('/user', newUserRouter);
+    app.use('/listing', newListingRouter);
 
     app.listen(port, () => {
         console.log(`Server is running on port: ${port}`);
