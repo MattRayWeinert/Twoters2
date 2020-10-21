@@ -3,7 +3,7 @@ import { FormGroup, FormControl } from 'react-bootstrap';
 import logo from '../Assets/twooty3.png';
 import logoHead from '../Assets/twooty5.png';
 import axios from 'axios';
-
+import { Redirect } from 'react-router';
 
 const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
 
@@ -31,7 +31,7 @@ class signup extends Component
 
             disabled: true,
             isLoggedIn: false,
-            isLoading: false,
+            isLoading: true,
 
             loginUsername: '',
             loginPassword: ''
@@ -47,6 +47,21 @@ class signup extends Component
         this.onLogin = this.onLogin.bind(this);
         this.onChangeLoginUsername = this.onChangeLoginUsername.bind(this);
         this.onChangeLoginPassword = this.onChangeLoginPassword.bind(this);
+
+        axios.defaults.withCredentials = true;
+
+        axios.get('http://localhost:5000/user/check', { withCredentials: true })
+            .then(res => {
+                if (res.data === true)
+                {
+                    this.setState(() => ({ isLoading: false, isLoggedIn: true }));
+                }
+    
+                if (res.data === false)
+                {
+                    this.setState(() => ({ isLoading: false, isLoggedIn: false }));
+                }
+            });
     }
 
     onChangeLoginUsername(e)
@@ -343,8 +358,9 @@ class signup extends Component
             height: "40px"
         };
 
-        return (
-
+        return this.state.isLoading ? null : 
+        this.state.isLoggedIn ? <Redirect to='/dashboard' /> :
+        (
             <div>
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <a className="navbar-brand" href="#"><img src={ logoHead } style={ navbarLogo }/></a>
