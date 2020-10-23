@@ -156,31 +156,35 @@ class dashboard extends Component
                             </li>
                         </ul>
 
-                        <div style={{ width: "55%"}}>
+                        <div style={{ width: "25%"}}>
 
                         </div>
 
                         {
                             this.state.isLoading ? null :
                                 this.state.isLoggedIn ? 
-                                <div>
-                                                                <form onSubmit={ this.onSubmit } style={{ display: "inline-block", width: "60%", marginLeft: "5%" }}>
-                                <FormControl style={{ paddingTop: "1px" }}
-                                    name="search"
-                                    type="text"
-                                    placeholder="Search"
-                                    value={ this.state.searchValue }
-                                    onChange={ this.onChangeSearchValue }
-                                    maxLength="14"
-                                />
-                            </form>
-                            
-                            <button className="btn btn-dark" type="subimt" style={{ marginLeft: "2%"}}>Search</button>
-                            
-                                    <button onClick={this.onCreate} className="btn btn-link" type="button">Create</button>
-                                    <button onClick={this.onDashboard} className="btn btn-link" type="button">Dashboard</button> 
-                                    <button onClick={this.onSettings} className="btn btn-link" type="button">Settings</button> 
-                                    <button onClick={this.onLogout} className="btn btn-link" type="button">Logout</button>
+                                <div style={{ display: "flex", width: "100%"}}>
+                                    <div style={{ width: "55%"}}>
+                                        <form onSubmit={ this.onSubmit } style={{ display: "inline-block", width: "75%", marginLeft: "5%" }}>
+                                        <FormControl style={{ paddingTop: "1px" }}
+                                            name="search"
+                                            type="text"
+                                            placeholder="Search"
+                                            value={ this.state.searchValue }
+                                            onChange={ this.onChangeSearchValue }
+                                            maxLength="14"
+                                        />
+                                        </form>
+                                
+                                        <button className="btn btn-dark" type="subimt" style={{ marginLeft: "2%"}}>Search</button>
+                                    </div>
+
+                                    <div style={{ marginLeft: "12.5%"}}>
+                                        <button onClick={this.onCreate} className="btn btn-link" type="button">Create</button>
+                                        <button onClick={this.onDashboard} className="btn btn-link" type="button">Dashboard</button> 
+                                        <button onClick={this.onSettings} className="btn btn-link" type="button">Settings</button> 
+                                        <button onClick={this.onLogout} className="btn btn-link" type="button">Logout</button>
+                                    </div>
                                 </div> :
                                 null
                         }
