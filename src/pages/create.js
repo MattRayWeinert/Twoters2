@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import logoHead from '../Assets/twooty5.png';
+import createIcon from '../Assets/create-icon.svg';
+import homeIcon from '../Assets/home-icon.svg';
+import settingsIcon from '../Assets/settings-icon.svg';
+import logoutIcon from '../Assets/logout-icon.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FormControl } from 'react-bootstrap';
 import axios from 'axios';
@@ -18,7 +22,14 @@ class Create extends Component
             university: '',
             description: '',
             location: '',
-            userId: ''
+            userId: '',
+
+            titleError: '',
+            universityError: '',
+            descriptionError: '',
+            locationError: '',
+
+            disabled: 'true'
         };
 
         this.onLogout = this.onLogout.bind(this);
@@ -51,8 +62,6 @@ class Create extends Component
     {
         axios.defaults.withCredentials = true;
 
-        axios.defaults.withCredentials = true;
-
         axios.get('http://localhost:5000/user/check', { withCredentials: true })
             .then(res => {
                 if (res.data === true)
@@ -72,7 +81,8 @@ class Create extends Component
             {
                 this.setState(() => (
                     {
-                        userId: res.data._id
+                        userId: res.data._id,
+                        username: res.data.username
                     }
                 ))
             }
@@ -175,44 +185,161 @@ class Create extends Component
             university: this.state.university,
             location: this.state.location,
             description: this.state.description,
-            userId: this.state.userId
+            userId: this.state.userId,
+            username: this.state.username
         };
 
         console.log(Listing);
 
         axios.post('http://localhost:5000/listing/new', Listing)
         .then(() => {
-            window.location.href = 'http://localhost:3000/settings';
+            window.location.href = 'http://localhost:3000/dashboard';
         })
         .catch(err => { console.log(err) });
     }
 
     onChangeDescription(e)
     {
+        // this.setState({
+        //     description: e.target.value
+        // });
+
+        if (e.target.value.length < 1)
+        {
+            this.setState({
+                descriptionError: 'Descrption is required'
+            })
+        } else {
+            this.setState({
+                descriptionError: ''
+            })
+        }
+        
         this.setState({
             description: e.target.value
-        });
+        }, () => {
+
+            if (this.state.titleError === "" && this.state.universityError === "" && this.state.descriptionError === "" && this.state.locationError === "") {
+                if ((this.state.title) !== "" && (this.state.university) !== "" && (this.state.description) !== ""
+                && (this.state.location) !== "") {
+                    this.setState({
+                        disabled: false
+                    })
+                }
+            } else {
+                this.setState({
+                    disabled: true
+                })
+            }
+        })
     }
 
     onChangeUniversity(e)
     {
+        // this.setState({
+        //     university: e.target.value
+        // });
+
+        if (e.target.value.length < 1)
+        {
+            this.setState({
+                universityError: 'University is required'
+            })
+        } else {
+            this.setState({
+                universityError: ''
+            })
+        }
+        
         this.setState({
             university: e.target.value
-        });
+        }, () => {
+
+            if (this.state.titleError === "" && this.state.universityError === "" && this.state.descriptionError === "" && this.state.locationError === "") {
+                if ((this.state.title) !== "" && (this.state.university) !== "" && (this.state.description) !== ""
+                && (this.state.location) !== "") {
+                    this.setState({
+                        disabled: false
+                    })
+                }
+            } else {
+                this.setState({
+                    disabled: true
+                })
+            }
+        })
     }
 
     onChangeLocation(e)
     {
+        // this.setState({
+        //     location: e.target.value
+        // });
+
+        if (e.target.value.length < 1)
+        {
+            this.setState({
+                locationError: 'Location is required'
+            })
+        } else {
+            this.setState({
+                locationError: ''
+            })
+        }
+        
         this.setState({
             location: e.target.value
-        });
+        }, () => {
+
+            if (this.state.titleError === "" && this.state.universityError === "" && this.state.descriptionError === "" && this.state.locationError === "") {
+                if ((this.state.title) !== "" && (this.state.university) !== "" && (this.state.description) !== ""
+                && (this.state.location) !== "") {
+                    this.setState({
+                        disabled: false
+                    })
+                }
+            } else {
+                this.setState({
+                    disabled: true
+                })
+            }
+        })
     }
 
     onChangeTitle(e)
     {
+        // this.setState({
+        //     title: e.target.value
+        // });
+
+        if (e.target.value.length < 1)
+        {
+            this.setState({
+                titleError: 'Title is required'
+            })
+        } else {
+            this.setState({
+                titleError: ''
+            })
+        }
+        
         this.setState({
             title: e.target.value
-        });
+        }, () => {
+
+            if (this.state.titleError === "" && this.state.universityError === "" && this.state.descriptionError === "" && this.state.locationError === "") {
+                if ((this.state.title) !== "" && (this.state.university) !== "" && (this.state.description) !== ""
+                && (this.state.location) !== "") {
+                    this.setState({
+                        disabled: false
+                    })
+                }
+            } else {
+                this.setState({
+                    disabled: true
+                })
+            }
+        })
     }
 
     render() 
@@ -221,6 +348,18 @@ class Create extends Component
             width: "40px",
             height: "40px"
         };
+
+        const commonTextbox = {
+            marginTop: "20px",
+            height: "35px",
+            width: "550px",
+            fontWeight: "100"
+        }
+
+        const descTextbox = {
+            marginTop: "20px",
+
+        }
 
         return (
             <div>
@@ -240,11 +379,11 @@ class Create extends Component
                         {
                             this.state.isLoading ? null :
                                 this.state.isLoggedIn ? 
-                                <div>
-                                    <button onClick={this.onCreate} className="btn btn-link" type="button">Create</button>
-                                    <button onClick={this.onDashboard} className="btn btn-link" type="button">Dashboard</button> 
-                                    <button onClick={this.onSettings} className="btn btn-link" type="button">Settings</button> 
-                                    <button onClick={this.onLogout} className="btn btn-link" type="button">Logout</button>
+                                <div style={{ marginLeft: "auto"}}>
+                                    <button title='Dashboard' onClick={this.onDashboard} className="btn btn-light" type="button"><img src={homeIcon} style={{ height:"24px", width: "24px" }} /></button>
+                                    <button title='Create' onClick={this.onCreate} className="btn btn-light" type="button"><img src={createIcon} style={{ height:"24px", width: "24px" }} /></button>
+                                    <button title='Settings' onClick={this.onSettings} className="btn btn-light" type="button"><img src={settingsIcon} style={{ height:"24px", width: "24px" }} /></button> 
+                                    <button title='Logout' onClick={this.onLogout} className="btn btn-light" type="button"><img src={logoutIcon} style={{ height:"24px", width: "24px" }}/></button>
                                 </div> :
                                 null
                         }
@@ -252,70 +391,97 @@ class Create extends Component
                 </nav>
 
                 <div>
-                        <form onSubmit={ this.onSubmit }>
-                            <table style={{ margin: "auto"}}>
-                                <tbody>
-                                    <tr>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }} 
-                                            name="Title"
-                                            type="text"
-                                            placeholder="Title"
-                                            value={ this.state.title }
-                                            onChange={ this.onChangeTitle }
-                                            maxLength="32"
-                                        /></td>
-                                    </tr>
 
-                                    <tr>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }}
-                                            name="University"
-                                            type="text"
-                                            placeholder="University"
-                                            value={ this.state.university }
-                                            onChange={ this.onChangeUniversity }
-                                            maxLength="32"
-                                        /></td>
-                                    </tr>
+                    <h1 style={{ textAlign: "center", marginTop: "2%" }}>
+                        Create a post
+                    </h1>
 
-                                    <tr>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }}
-                                            name="Location"
-                                            type="text"
-                                            placeholder="Location"
-                                            value={ this.state.location }
-                                            onChange={ this.onChangeLocation }
-                                            maxLength="32"
-                                        /></td>
-                                    </tr>
+                    <form onSubmit={ this.onSubmit }>
+                        <table style={{ margin: "auto"}}>
+                            <tbody>
 
-                                    {/* <tr>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }}
-                                            name="Subject"
-                                            type="text"
-                                            placeholder="subject"
-                                            value={ this.state.subject }
-                                            onChange={ this.onChangeSubject }
-                                            maxLength="32"
-                                        /></td>
-                                    </tr> */}
+                                <tr>
+                                    <td><span>Title:</span></td>
+                                    <td><FormControl style={ commonTextbox } 
+                                        name="Title"
+                                        type="text"
+                                        value={ this.state.title }
+                                        onChange={ this.onChangeTitle }
+                                        maxLength="32"
+                                    /></td>
+                                </tr>
 
-                                    <tr>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }}
-                                            name="Description"
-                                            type="text"
-                                            placeholder="Description"
-                                            value={ this.state.description }
-                                            onChange={ this.onChangeDescription }
-                                            maxLength="250"
-                                        /></td>
-                                    </tr>
-                                </tbody>                                
-                            </table>
+                                {/* {
+                                    this.state.titleError.length > 0 && 
+                                    <span className='error' style={{color: "red", fontSize: "0.625em"}}>{this.state.titleError}</span>
+                                } */}
 
-                            <button className="btn btn-dark" type="subimt" style={{ marginLeft: "50%" }}>Submit</button>
+                                <tr>
+                                    <td><span>University:</span></td>
+                                    <td><FormControl style={ commonTextbox }
+                                        name="University"
+                                        type="text"
+                                        value={ this.state.university }
+                                        onChange={ this.onChangeUniversity }
+                                        maxLength="32"
+                                    /></td>
+                                </tr>
 
-                        </form>
-                    </div>
+                                {/* {
+                                    this.state.universityError.length > 0 && 
+                                    <span className='error' style={{color: "red", fontSize: "0.625em"}}>{this.state.universityError}</span>
+                                } */}
+
+                                <tr>
+                                    <td><span>Location:</span></td>
+                                    <td><FormControl style={ commonTextbox }
+                                        name="Location"
+                                        type="text"
+                                        value={ this.state.location }
+                                        onChange={ this.onChangeLocation }
+                                        maxLength="32"
+                                    /></td>
+                                </tr>
+
+                                {/* {
+                                    this.state.locationError.length > 0 && 
+                                    <span className='error' style={{color: "red", fontSize: "0.625em"}}>{this.state.locationError}</span>
+                                } */}
+
+                                {/* <tr>
+                                    <td><FormControl style={{ margin: "10px", height: "28px" }}
+                                        name="Subject"
+                                        type="text"
+                                        placeholder="subject"
+                                        value={ this.state.subject }
+                                        onChange={ this.onChangeSubject }
+                                        maxLength="32"
+                                    /></td>
+                                </tr> */}
+
+                                <tr>
+                                    <td><span>Description:</span></td>
+                                    <td><FormControl as="textarea" rows={10} style={ descTextbox }
+                                        name="Description"
+                                        type="text"
+                                        value={ this.state.description }
+                                        onChange={ this.onChangeDescription }
+                                        maxLength="250"
+                                    /></td>
+                                </tr>
+
+                                {/* {
+                                    this.state.descriptionError.length > 0 && 
+                                    <span className='error' style={{color: "red", fontSize: "0.625em"}}>{this.state.descriptionError}</span>
+                                } */}
+
+                            </tbody>                                
+                        </table>
+
+                        <button disabled={ this.state.disabled } className="btn btn-dark" type="subimt" style={{ marginLeft: "48%", marginTop: "20px" }}>Submit</button>
+
+                    </form>
+                </div>
             </div>
         )
     }

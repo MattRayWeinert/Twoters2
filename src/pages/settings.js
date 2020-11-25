@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import logoHead from '../Assets/twooty5.png';
+import createIcon from '../Assets/create-icon.svg';
+import homeIcon from '../Assets/home-icon.svg';
+import settingsIcon from '../Assets/settings-icon.svg';
+import logoutIcon from '../Assets/logout-icon.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FormControl } from 'react-bootstrap';
 import axios from 'axios';
 
+/*
+    Class responsible for creating the settings page and contains all
+    it's frontend capability.
+*/
 class settings extends Component 
 {
     constructor()
@@ -19,6 +27,12 @@ class settings extends Component
             email: '',
             university: '',
 
+            usernameError: '',
+            firstNameError: '',
+            lastNameError: '',
+            emailError: '',
+            universityError: '',
+
             dbUsername: '',
             dbFirstName: '',
             dbLastName: '',
@@ -26,10 +40,12 @@ class settings extends Component
             dbUniversity: '',
             
             isLoggedIn: false,
-            isLoading: true
+            isLoading: true,
+            disabled: true
         };
 
         this.onLogout = this.onLogout.bind(this);
+        this.onCreate = this.onCreate.bind(this);
         this.onDashboard = this.onDashboard.bind(this);
         this.onSettings = this.onSettings.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -38,6 +54,7 @@ class settings extends Component
         this.onChangeFirstName = this.onChangeFirstName.bind(this);
         this.onChangeLastName = this.onChangeLastName.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
+        this.onChangeUniversity = this.onChangeUniversity.bind(this);
     }
 
     componentDidMount(e)
@@ -67,7 +84,8 @@ class settings extends Component
                             dbFirstName: res.data.firstName,
                             dbLastName: res.data.lastName,
                             dbEmail: res.data.email,
-                            id: res.data._id
+                            id: res.data._id,
+                            dbUniversity: res.data.university
                         }
                     ))
                 }
@@ -79,6 +97,11 @@ class settings extends Component
             }).catch(err => { console.log(err) });
     }
 
+    /*
+        Redirects the user to the create page after checking
+        if the user is logged in. If not logged in, the user is sent
+        to the signup page. 
+    */    
     onCreate(e)
     {
         e.preventDefault(e);
@@ -99,6 +122,11 @@ class settings extends Component
         }).catch(err => { window.location.href = 'http://localhost:3000/'; });
     }
 
+    /*
+        Redirects the user to the dashboard page after checking
+        if the user is logged in. If not logged in, the user is sent
+        to the signup page. 
+    */    
     onDashboard(e)
     {
         e.preventDefault(e);
@@ -119,6 +147,11 @@ class settings extends Component
         }).catch(err => { window.location.href = 'http://localhost:3000/'; });
     }
 
+    /*
+        Redirects the user to the settings page after checking
+        if the user is logged in. If not logged in, the user is sent
+        to the signup page. 
+    */    
     onSettings(e)
     {
         e.preventDefault(e);
@@ -139,6 +172,10 @@ class settings extends Component
         }).catch(err => { window.location.href = 'http://localhost:3000/'; });
     }
 
+    /*
+        Handles user logout and terminating their login session
+        then redirects them to the signup page. 
+    */
     onLogout(e)
     {
 
@@ -159,13 +196,44 @@ class settings extends Component
         }).catch(err => { window.location.href = 'http://localhost:3000/'; });
     }
 
+    /* 
+        Event handler for changing the username state
+    */
     onChangeUsername(e)
     {
+        // this.setState({
+        //     username: e.target.value
+        // });
+
+        if (e.target.value.length < 1)
+        {
+            this.setState({
+                usernameError: 'Username is required'
+            })
+        } else {
+            this.setState({
+                usernameError: ''
+            })
+        }
+        
         this.setState({
             username: e.target.value
-        });
+        }, () => {
+            if ((this.state.username) !== "" || (this.state.firstName) !== "" || (this.state.lastName) !== "" || (this.state.email) !== "" || (this.state.university) !== "") {
+                this.setState({
+                    disabled: false
+                })
+            } else {
+                this.setState({
+                    disabled: true
+                })
+            }
+        })
     }
 
+    /* 
+        Event handler for changing the password state
+    */
     onChangePassword(e)
     {
         this.setState({
@@ -173,26 +241,145 @@ class settings extends Component
         });
     }
 
+    /* 
+        Event handler for changing the first name state
+    */
     onChangeFirstName(e)
     {
+        // this.setState({
+        //     firstName: e.target.value
+        // });
+
+        if (e.target.value.length < 1)
+        {
+            this.setState({
+                firstNameError: 'First name is required'
+            })
+        } else {
+            this.setState({
+                firstNameError: ''
+            })
+        }
+        
         this.setState({
             firstName: e.target.value
-        });
+        }, () => {
+            if ((this.state.username) !== "" || (this.state.firstName) !== "" || (this.state.lastName) !== "" || (this.state.email) !== "" || (this.state.university) !== "") {
+                this.setState({
+                    disabled: false
+                })
+            } else {
+                this.setState({
+                    disabled: true
+                })
+            }
+        })
     }
 
+    /* 
+        Event handler for changing the last name state
+    */
     onChangeLastName(e)
     {
+        // this.setState({
+        //     lastName: e.target.value
+        // });
+
+        if (e.target.value.length < 1)
+        {
+            this.setState({
+                lastNameError: 'Last name is required'
+            })
+        } else {
+            this.setState({
+                lastNameError: ''
+            })
+        }
+        
         this.setState({
             lastName: e.target.value
-        });
+        }, () => {
+            if ((this.state.username) !== "" || (this.state.firstName) !== "" || (this.state.lastName) !== "" || (this.state.email) !== "" || (this.state.university) !== "") {
+                this.setState({
+                    disabled: false
+                })
+            } else {
+                this.setState({
+                    disabled: true
+                })
+            }
+        })
     }
 
+    /* 
+        Event handler for changing the email state
+    */
     onChangeEmail(e)
     {
+        // this.setState({
+        //     email: e.target.value
+        // });
+
+        if (e.target.value.length < 1)
+        {
+            this.setState({
+                emailError: 'Email is required'
+            })
+        } else {
+            this.setState({
+                emailError: ''
+            })
+        }
+        
         this.setState({
             email: e.target.value
-        });
+        }, () => {
+            if ((this.state.username) !== "" || (this.state.firstName) !== "" || (this.state.lastName) !== "" || (this.state.email) !== "" || (this.state.university) !== "") {
+                this.setState({
+                    disabled: false
+                })
+            } else {
+                this.setState({
+                    disabled: true
+                })
+            }
+        })
     }
+
+    /* 
+        Event handler for changing the university state
+    */
+   onChangeUniversity(e)
+   {
+    //    this.setState({
+    //        university: e.target.value
+    //    });
+
+       if (e.target.value.length < 1)
+       {
+           this.setState({
+               universityError: 'University is required'
+           })
+       } else {
+           this.setState({
+               universityError: ''
+           })
+       }
+       
+       this.setState({
+           university: e.target.value
+       }, () => {
+            if ((this.state.username) !== "" || (this.state.firstName) !== "" || (this.state.lastName) !== "" || (this.state.email) !== "" || (this.state.university) !== "") {
+                this.setState({
+                    disabled: false
+                })
+           } else {
+               this.setState({
+                   disabled: true
+               })
+           }
+       })
+   }
 
     onSubmit(e)
     {
@@ -204,7 +391,8 @@ class settings extends Component
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             email: this.state.email,
-            id: this.state.id
+            id: this.state.id,
+            university: this.state.university
         };
 
         axios.put('http://localhost:5000/user/update', User)
@@ -242,28 +430,31 @@ class settings extends Component
                         </ul>
 
                         {
-                            this.state.isLoading ? null :
-                                this.state.isLoggedIn ? 
-                                <div>
-                                    <button onClick={this.onCreate} className="btn btn-link" type="button">Create</button>                                    
-                                    <button onClick={this.onDashboard} className="btn btn-link" type="button">Dashboard</button> 
-                                    <button onClick={this.onSettings} className="btn btn-link" type="button">Settings</button> 
-                                    <button onClick={this.onLogout} className="btn btn-link" type="button">Logout</button>
-                                </div> :
-                                null
+                            this.state.isLoading ? 
+                                null :
+                                (
+                                    this.state.isLoggedIn ? 
+                                    <div style={{ marginLeft: "auto"}}>
+                                        <button title='Dashboard' onClick={this.onDashboard} className="btn btn-light" type="button"><img src={homeIcon} style={{ height:"24px", width: "24px" }} /></button>
+                                        <button title='Create' onClick={this.onCreate} className="btn btn-light" type="button"><img src={createIcon} style={{ height:"24px", width: "24px" }} /></button>
+                                        <button title='Settings' onClick={this.onSettings} className="btn btn-light" type="button"><img src={settingsIcon} style={{ height:"24px", width: "24px" }} /></button> 
+                                        <button title='Logout' onClick={this.onLogout} className="btn btn-light" type="button"><img src={logoutIcon} style={{ height:"24px", width: "24px" }}/></button>
+                                    </div> :
+                                    null
+                                )
                         }
                     </div>
                 </nav>
 
                 <div style={ settingsDiv }>
-                    <h1 style={{ textAlign: "center" }}>Settings</h1>
+                    <h1 style={{ textAlign: "center", marginTop: "4%" }}>Settings</h1>
                     <div>
                         <form onSubmit={ this.onSubmit }>
                             <table style={{ margin: "auto"}}>
                                 <tbody>
                                     <tr>
                                         <td><span>Username:</span></td>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }} 
+                                        <td><FormControl style={{ margin: "10px", height: "35px", width: "400px", fontWeight: "100" }} 
                                             name="username"
                                             type="text"
                                             placeholder={ this.state.dbUsername }
@@ -275,7 +466,7 @@ class settings extends Component
 
                                     <tr>
                                         <td><span>First name:</span></td>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }}
+                                        <td><FormControl style={{ margin: "10px", height: "35px", width: "400px", fontWeight: "100" }}
                                             name="firstName"
                                             type="text"
                                             placeholder={ this.state.dbFirstName }
@@ -287,7 +478,7 @@ class settings extends Component
 
                                     <tr>
                                         <td><span>Last name:</span></td>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }}
+                                        <td><FormControl style={{ margin: "10px", height: "35px", width: "400px", fontWeight: "100" }}
                                             name="lastName"
                                             type="text"
                                             placeholder={ this.state.dbLastName }
@@ -299,7 +490,7 @@ class settings extends Component
 
                                     <tr>
                                         <td><span>Email:</span></td>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }}
+                                        <td><FormControl style={{ margin: "10px", height: "35px", width: "400px", fontWeight: "100" }}
                                             name="email"
                                             type="text"
                                             placeholder={ this.state.dbEmail }
@@ -311,24 +502,29 @@ class settings extends Component
 
                                     <tr>
                                         <td><span>University:</span></td>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }} 
-                                            placeholder="UPDATE THIS FIELD IN FUTURE"
+                                        <td><FormControl style={{ margin: "10px", height: "35px", width: "400px", fontWeight: "100" }} 
+                                            name="university"
+                                            type="text"
+                                            placeholder={ this.state.dbUniversity }
+                                            value={ this.state.university }
+                                            onChange={ this.onChangeUniversity }
+                                            maxLength="35"
                                         /></td>
                                     </tr>
 
-                                    <tr>
+                                    {/* <tr>
                                         <td><span>id:</span></td>
-                                        <td><FormControl style={{ margin: "10px", height: "28px" }}
+                                        <td><FormControl style={{ margin: "10px", height: "35px", width: "400px" }}
                                             name="email"
                                             type="text"
                                             placeholder={ this.state.id }
                                             maxLength="35"
                                         /></td>
-                                    </tr>
+                                    </tr> */}
                                 </tbody>                                
                             </table>
 
-                            <button className="btn btn-dark" type="subimt" style={{ marginLeft: "50%" }}>Apply</button>
+                            <button disabled={ this.state.disabled } className="btn btn-dark" type="subimt" style={{ marginLeft: "46%" }}>Submit</button>
 
                         </form>
                     </div>
