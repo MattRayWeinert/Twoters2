@@ -7,7 +7,8 @@ const listingSchema = new Schema({
     title: String,
     university: String,
     location: String,
-    description: String
+    description: String,
+    username: String
 });
 
 const Listing = mongoose.model('Listing', listingSchema);

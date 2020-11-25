@@ -11,6 +11,7 @@ router.post("/", async (req, res) => {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;
+  const university = req.body.university;
 
   const salt = await bcrypt.genSalt();
   const password = await bcrypt.hash(plainPassword, salt);
@@ -20,7 +21,8 @@ router.post("/", async (req, res) => {
       password,
       firstName,
       lastName,
-      email
+      email,
+      university
     });
 
   newUser.save()
@@ -60,6 +62,7 @@ router.post("/logout", (req, res, next) => {
 
   req.logout();
   res.send(req.isAuthenticated());    
+
 });
 
 
@@ -68,6 +71,7 @@ router.get("/check", async (req, res, next) => {
 
   res.send(req.isAuthenticated());
   (req, res, next);
+
 });
 
 
@@ -83,8 +87,9 @@ router.get("/data", async (req, res, next) => {
     { 
         res.send(docs);
     } 
-}); 
+  }); 
   (req, res, next);
+  
 });
 
 
@@ -109,6 +114,11 @@ router.put("/update", async (req, res, next) => {
   if (req.body.email != '')
   {
     User.findByIdAndUpdate(req.body.id, { email: req.body.email }, function(err, user) { });
+  }
+
+  if (req.body.university != '')
+  {
+    User.findByIdAndUpdate(req.body.id, { university: req.body.university }, function(err, user) { });
   }
 
   res.send("User updated!");
