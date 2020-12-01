@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import logoHead from '../Assets/twooty5.png';
 import createIcon from '../Assets/create-icon.svg';
 import homeIcon from '../Assets/home-icon.svg';
@@ -8,7 +8,6 @@ import searchIcon from '../Assets/search-icon.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FormControl } from 'react-bootstrap';
 import axios from 'axios';
-import { wait } from '@testing-library/react';
 
 /*
     Class responsible for creating the dashboard page and contains all
@@ -21,7 +20,6 @@ class dashboard extends Component
         super();
 
         this.state = {
-            userID: '',
             username: '',
 
             isLoggedIn: false,
@@ -39,7 +37,39 @@ class dashboard extends Component
         this.onCreate = this.onCreate.bind(this);
         this.onChangeSearchValue = this.onChangeSearchValue.bind(this);
         this.onSearch = this.onSearch.bind(this);
+    }    
 
+    // componentWillMount(e)
+    // {
+    //     axios.defaults.withCredentials = true;
+
+    //     axios.get('http://localhost:5000/user/check', { withCredentials: true })
+    //         .then(res => {
+    //             if (res.data === true)
+    //             {
+    //                 this.setState(() => ({ isLoading: false, isLoggedIn: true }));
+    //             }
+    
+    //             if (res.data === false)
+    //             {
+    //                 this.setState(() => ({ isLoading: false, isLoggedIn: false }));
+    //             }
+    //     });
+
+    //     axios.post('http://localhost:5000/listing/userPosts')
+    //     .then(res => {
+    //         this.setState(() => (
+    //                 {
+    //                     userPosts: res.data,
+    //                     username: res.data
+    //                 }
+    //             ));
+    //         console.log(this.state.userPosts);
+    //     }).catch(err => { console.log(err) });
+    // }
+
+    componentDidMount(e)
+    {
         axios.defaults.withCredentials = true;
 
         axios.get('http://localhost:5000/user/check', { withCredentials: true })
@@ -55,41 +85,13 @@ class dashboard extends Component
                 }
         });
 
-    }
-
-    async componentDidMount(e)
-    {
-        axios.defaults.withCredentials = true;
-
-        await axios.get('http://localhost:5000/user/data', { withCredentials: true })
-        .then(res => {
-            if (res.data !== undefined)
-            {
-                this.setState(() => (
-                    {
-                        userID: res.data._id,
-                        username: res.data.username
-                    }
-                ))
-            }
-            else
-            {
-                console.warn("Settings component did not properly mount.");
-            }
-        }).catch(err => { console.log(err) });
-
-
-        const userID = {
-            userID: this.state.userID
-        };
-
-        axios.post('http://localhost:5000/listing/userPosts', userID)
+        axios.post('http://localhost:5000/listing/userPosts')
         .then(res => {
             this.setState(() => (
-                {
-                    userPosts: res.data
-                }
-            ));
+                    {
+                        userPosts: res.data,
+                    }
+                ));
             console.log(this.state.userPosts);
         }).catch(err => { console.log(err) });
     }
@@ -226,7 +228,7 @@ class dashboard extends Component
                     }
                 ));
 
-                console.log(res.data);
+                console.log(Date.now() + ' :search data: ' + res.data);
             }
         }).catch(err => { console.log(err) });
     }
@@ -285,32 +287,32 @@ class dashboard extends Component
 
         const userPostsTable = []
 
-        for(let x = 0; x < this.state.usersPosts.length; x++)
+        for(let i = 0; i < this.state.usersPosts.length; i++)
         {
             userPostsTable.push(
-                (x < 1) ? 
+                (i < 1) ? 
                 (
                     <table style={ searchResult }>
                         <tr>
-                            <td style={ searchResultUsername }>@{ this.state.usersPosts[x].username }</td>
-                            <td style={ searchResultUniversity }>{ this.state.usersPosts[x].university }</td>
+                            <td style={ searchResultUsername }>@{ this.state.userPostsTable[i].username }</td>
+                            <td style={ searchResultUniversity }>{ this.state.userPostsTable[i].university }</td>
                         </tr>
                         <tr>
-                            <td style={ searchResultTitle }>{ this.state.usersPosts[x].title }</td>
+                            <td style={ searchResultTitle }>{ this.state.userPostsTable[i].title }</td>
                         </tr>
                         <tr>
-                            <td style={ searchResultDesc }>{ this.state.usersPosts[x].description }</td>
+                            <td style={ searchResultDesc }>{ this.state.userPostsTable[i].description }</td>
                         </tr>
                     </table>
                 ) :
                 (
                     <table style={ searchResult2 }>
                         <tr>
-                            <td style={ searchResultUsername }>{ this.state.usersPosts[x].username }</td>
-                            <td style={ searchResultUniversity }>{ this.state.usersPosts[x].university }</td>
+                            <td style={ searchResultUsername }>{ this.state.userPostsTable[i].username }</td>
+                            <td style={ searchResultUniversity }>{ this.state.userPostsTable[i].university }</td>
                         </tr>
                         <tr>
-                            <td style={ searchResultDesc }>{ this.state.usersPosts[x].description }</td>
+                            <td style={ searchResultDesc }>{ this.state.userPostsTable[i].description }</td>
                         </tr>
                     </table>
                 )
@@ -413,17 +415,24 @@ class dashboard extends Component
 
                 <div>
                     {
-                        (this.state.searchResults.length == 0) ?
-                            (
-                                <div style={{ textAlign: "center", margin: "15px" }}>
-                                    { userPostsTable }
-                                </div>
-                            ) :
-                            (
-                                <div style={{ textAlign: "center", marginTop: "5px", marginBottom: "5px" }}>
-                                    { searchResultTable }
-                                </div>
-                            )
+                        this.state.isLoading ? 
+                            null :
+                            this.state.isLoggedIn ? 
+                                (
+                                    (this.state.searchResults.length == 0) ?
+                                        (
+                                            <div style={{ textAlign: "center", marginTop: "5px", marginBottom: "5px" }}>
+                                                <h2>Dashboard</h2>
+                                                { userPostsTable }
+                                            </div>
+                                        ) :
+                                        (
+                                            <div style={{ textAlign: "center", marginTop: "5px", marginBottom: "5px" }}>
+                                                { searchResultTable }
+                                            </div>
+                                        )
+                                ) :
+                                null
                     }
                 </div>
             </div>
