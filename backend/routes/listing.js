@@ -45,7 +45,7 @@ router.post("/search", async (req, res) => {
 */
 router.post("/userPosts", async (req, res) => {
 
-  const value = req.body.userID;
+  const value = req.user.id;
 
   Listing.find(({ userId: value }), function(err, docs) {
     res.send(docs);
